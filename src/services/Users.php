@@ -42,10 +42,14 @@ class Users extends Component
         // With the user authenticated, login or register
         $user = Craft::$app->getUser()->getIdentity();
 
+        SocialLogin::log('User: ' . json_encode($user));
+
         // Fetch plugin settings
         $settings = SocialLogin::$plugin->getSettings();
 
         if (!$user) {
+            SocialLogin::log('No user available, attempting to get or create');
+
             $user = $this->_getOrCreateUser($provider, $userProfile);
 
             if (!$user) {
@@ -287,6 +291,9 @@ class Users extends Component
 
     private function _matchExistingUser(Provider $provider, UserProfile $userProfile): ?User
     {
+        SocialLogin::log('Attempting to match existing user based on this profile: ' . json_encode($userProfile));
+        SocialLogin::log('Provider: ' . $provider->handle);
+
         $matchUserSource = $provider->matchUserSource;
         $matchUserDestination = $provider->matchUserDestination;
 
